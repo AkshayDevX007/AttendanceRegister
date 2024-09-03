@@ -4,4 +4,8 @@ export interface User {
   email: string;
   phone: string;
   unitName: string;
+  attendance: {
+    year: number;
+    totalPercentage: number;
+  }[];
 }

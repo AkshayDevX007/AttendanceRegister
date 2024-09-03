@@ -11,7 +11,7 @@ const Header = () => {
         </div>
         <div className="navbar-end hidden md:flex">
             <Link to="/" className="btn btn-ghost text-lg">Users</Link>
-            <Link className="btn btn-ghost text-lg">Attendance</Link>
+            <Link to="/attendance" className="btn btn-ghost text-lg">Attendance</Link>
         </div>
       </div>
     </>
