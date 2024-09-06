@@ -14,6 +14,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as AttendanceIndexImport } from './routes/attendance/index'
+import { Route as AttendanceIdImport } from './routes/attendance/$id'
 
 // Create Virtual Routes
 
@@ -31,6 +32,11 @@ const AttendanceIndexRoute = AttendanceIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AttendanceIdRoute = AttendanceIdImport.update({
+  path: '/attendance/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -40,6 +46,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/attendance/$id': {
+      id: '/attendance/$id'
+      path: '/attendance/$id'
+      fullPath: '/attendance/$id'
+      preLoaderRoute: typeof AttendanceIdImport
       parentRoute: typeof rootRoute
     }
     '/attendance/': {
@@ -56,6 +69,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
+  AttendanceIdRoute,
   AttendanceIndexRoute,
 })
 
@@ -68,11 +82,15 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/attendance/$id",
         "/attendance/"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/attendance/$id": {
+      "filePath": "attendance/$id.tsx"
     },
     "/attendance/": {
       "filePath": "attendance/index.tsx"

@@ -1,19 +1,21 @@
 import { Link } from "@tanstack/react-router";
+import MobileNav from "./mobileNav";
 
 const Header = () => {
   return (
     <>
-      <div className="navbar bg-base-100 md:max-w-7xl mx-auto rounded-md border shadow-md">
+      <div className="navbar px-4 bg-base-100 rounded-md border shadow-md w-full">
         <div className="navbar-start">
-          <Link to="/" className="btn btn-ghost text-xl">
+          <Link to="/" className="btn btn-ghost text-xl font-robotoSlab">
             JeffDB
           </Link>
         </div>
         <div className="navbar-end hidden md:flex">
-            <Link to="/" className="btn btn-ghost text-lg">Users</Link>
-            <Link to="/attendance" className="btn btn-ghost text-lg">Attendance</Link>
+            <Link to="/" className={`btn btn-ghost text-lg font-robotoSlab font-bold`} activeProps={() => ({ className: "underline" })}>Users</Link>
+            <Link to="/attendance" className={`btn btn-ghost text-lg font-robotoSlab font-bold`} activeProps={ () => ({ className: "underline" })}>Attendance</Link>
         </div>
       </div>
+      <MobileNav />
     </>
   );
 };

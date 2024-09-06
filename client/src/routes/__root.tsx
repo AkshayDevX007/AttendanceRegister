@@ -8,8 +8,8 @@ export const Route = createRootRoute({
     <>
       <Outlet />
       <Toaster />
-      <ReactQueryDevtools initialIsOpen={false} />
-      <TanStackRouterDevtools />
+      {/* <ReactQueryDevtools initialIsOpen={false} />
+      <TanStackRouterDevtools /> */}
     </>
   ),
 })

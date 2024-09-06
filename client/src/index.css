@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.custom-calendar .react-calendar__tile--active {
+    background-color: lightblue;
+    border-radius: 10px;
+  }
+  

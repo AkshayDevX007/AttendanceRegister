@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <>
       <Header />
-      <div className="flex justify-center items-center mt-8">
+      <div className="flex justify-center items-center  mt-8 mb-24">
         <div>
       
         <AddUser />

@@ -1,49 +1,37 @@
 import { useEffect, useState } from "react";
-import Calendar from "react-calendar";
-import { useMarkAttendanceMutation } from "../actions/attendance/markAttendanceMutation";
-import { User } from "../types/user";
+import { useEditAttendanceMutation } from "../actions/attendance/editAttendanceMutation";
 
-type ValuePiece = Date | null;
-
-type Value = ValuePiece | [ValuePiece, ValuePiece];
-
-const MarkAttendance = ({ user, year }: { user: User; year: number }) => {
+const EditAttendance = ({ data }: any) => {
   const [showMarkAttendance, setShowMarkAttendance] = useState(false);
-  const [value, onChange] = useState<Value>(new Date());
-  const { mutate: markAttendance, isPending: isMarking, isSuccess: isMarked } =
-    useMarkAttendanceMutation();
+  const {
+    mutate: editAttendance,
+    isPending: isEditing,
+    isSuccess: isEdited,
+  } = useEditAttendanceMutation();
 
   const handleMarkPresent = () => {
-    markAttendance({
-      user: user._id,
-      year: year,
-      date: value as Date,
+    editAttendance({
+      id: data._id,
       isPresent: true,
     });
   };
 
   const handleMarkAbsent = () => {
-    markAttendance({
-      user: user._id,
-      year: year,
-      date: value as Date,
+    editAttendance({
+      id: data._id,
       isPresent: false,
     });
   };
 
   useEffect(() => {
-    if (isMarked) {
+    if (isEdited) {
       setShowMarkAttendance(false);
     }
-  }, [isMarked]);
-
+  }, [isEdited]);
 
   const handleCancel = () => {
     setShowMarkAttendance(false);
   };
-
-  // Function to disable dates except Sundays
-  const isDayDisabled = (date: Date) => date.getDay() !== 0;
 
   return (
     <>
@@ -66,23 +54,16 @@ const MarkAttendance = ({ user, year }: { user: User; year: number }) => {
         <div className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg">
-              Mark Attendance for {user.name}
+              Edit Attendance for {data.user.name}
             </h3>
-            <div className="mt-4">
-              <Calendar
-                onChange={onChange}
-                value={value}
-                tileDisabled={({ date }) => isDayDisabled(date)}
-                className="custom-calendar"
-              />
-            </div>
+
             <div className="modal-actions mt-4">
               <button
                 className="btn btn-success mr-2"
                 onClick={handleMarkPresent}
-                disabled={isMarking || isDayDisabled(value as Date)}
+                disabled={isEditing}
               >
-                {isMarking ? (
+                {isEditing ? (
                   <span className="loading loading-ring loading-md"></span>
                 ) : (
                   "Mark Present"
@@ -91,9 +72,9 @@ const MarkAttendance = ({ user, year }: { user: User; year: number }) => {
               <button
                 className="btn btn-error mr-2"
                 onClick={handleMarkAbsent}
-                disabled={isMarking || isDayDisabled(value as Date)}
+                disabled={isEditing}
               >
-                {isMarking ? (
+                {isEditing ? (
                   <span className="loading loading-ring loading-md"></span>
                 ) : (
                   "Mark Absent"
@@ -110,4 +91,4 @@ const MarkAttendance = ({ user, year }: { user: User; year: number }) => {
   );
 };
 
-export default MarkAttendance;
+export default EditAttendance;
