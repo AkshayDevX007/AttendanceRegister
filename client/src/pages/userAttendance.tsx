@@ -23,7 +23,7 @@ const UserAttendance = () => {
   return (
     <>
       <Header />
-      <div className="mx-5 md:mx-10 mt-8 mb-12">
+      <div className="mx-5 md:mx-10 mt-8 mb-24">
         <div>
           {" "}
           <div className="mb-6">

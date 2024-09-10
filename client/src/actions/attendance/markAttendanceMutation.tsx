@@ -3,7 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 interface AttendanceDto {
-  user: string;
+  users: string[];
   year: number;
   date: Date;
   isPresent: boolean;
@@ -11,7 +11,7 @@ interface AttendanceDto {
 
 async function markAttendance(input: AttendanceDto) {
   const formdata = new FormData();
-  formdata.append("userId", input.user);
+  formdata.append("userIds", JSON.stringify(input.users));
   formdata.append("year", input.year.toString());
   formdata.append("date", input.date.toISOString());
   formdata.append("isPresent", input.isPresent.toString());
