@@ -7,7 +7,7 @@ const Header = () => {
       <div className="navbar px-4 bg-base-100 rounded-md border shadow-md w-full">
         <div className="navbar-start">
           <Link to="/" className="btn btn-ghost text-xl font-robotoSlab">
-            JeffDB
+            Jy.KallurWest
           </Link>
         </div>
         <div className="navbar-end hidden md:flex">
