@@ -10,7 +10,6 @@ import {
 
 import { useState } from "react";
 import MarkAttendance from "../markAttendance";
-import { User } from "../../types/user";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

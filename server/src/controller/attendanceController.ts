@@ -7,71 +7,87 @@ const attendance = new Hono().basePath("/attendance");
 // mark attendance
 attendance.post("/", async (c) => {
   const body = await c.req.parseBody();
-  const { userId, year, date, isPresent } = body;
+  const { userIds, year, date, isPresent } = body;
 
-  if (!userId || !year || !date || isPresent === undefined) {
-    return c.json({ message: "All fields are required" }, 400);
+  if (!userIds || !year || !date || isPresent === undefined) {
+    return c.json({ message: "All fields are requireds" }, 400);
   }
+  const users = JSON.parse(userIds as string);
+
+    // Convert date to a JavaScript Date object
+    const attendanceDate = new Date(date as string);
+    const currentDate = new Date();
+  
+    // Check if the date is a Sunday (0 = Sunday)
+    if (attendanceDate.getDay() != 0) {
+      return c.json({ message: "Attendance can only be marked on Sundays" }, 400);
+    }
+  
+    // Check if the date exceeds the current date
+    if (attendanceDate > currentDate) {
+      return c.json({ message: "Date cannot be in the future" }, 400);
+    }
+  
+    // Check if the date goes back beyond 2020
+    const year2020 = new Date('2020-01-01');
+    if (attendanceDate < year2020) {
+      return c.json({ message: "Date cannot go back beyond the year 2020" }, 400);
+    }
 
   try {
-    // Find existing attendance record for the user, year, and date
-    let attendance = await Attendance.findOne({ user: userId, year, date });
+    // Iterate over the array of user IDs
+      for (const userId of users) {
+        // Find existing attendance record for the user, year, and date
+        let attendance = await Attendance.findOne({ user: userId, year, date });
 
-    if (attendance) {
-      // Update the isPresent status if a record exists
-      attendance.isPresent = isPresent as unknown as boolean;
-      await attendance.save();
-    } else {
-      // Create a new attendance record if it doesn't exist
-      attendance = await Attendance.create({
-        user: userId,
-        year,
-        date,
-        isPresent,
-      });
-    }
+        if (attendance) {
+          // Update the isPresent status if a record exists
+          attendance.isPresent = isPresent as unknown as boolean;
+          await attendance.save();
+        } else {
+          // Create a new attendance record if it doesn't exist
+          attendance = await Attendance.create({
+            user: userId,
+            year,
+            date,
+            isPresent,
+          });
+        }
 
-    // Get all attendance records for the user in the given year
-    const userAttendance = await Attendance.find({
-      user: userId,
-      year: year,
-    });
+        // Get all attendance records for the user in the given year
+        const userAttendance = await Attendance.find({ user: userId, year });
 
-    // Calculate total attendance and percentage for the year
-    const totalAttendance = userAttendance.reduce((sum, record) => {
-      return sum + (record.isPresent ? 1 : 0);
-    }, 0);
+        // Calculate total attendance and percentage for the year
+        const totalAttendance = userAttendance.reduce(
+          (sum, record) => sum + (record.isPresent ? 1 : 0),
+          0
+        );
+        const attendancePercentage =
+          (totalAttendance / userAttendance.length) * 100;
 
-    const attendancePercentage =
-      (totalAttendance / userAttendance.length) * 100;
+        // Update the attendance record for the year in the user document
+        const user = await User.findById(userId);
+        if (!user) {
+          return c.json({ message: `User not found: ${userId}` }, 404);
+        }
 
-    // Update the attendance record for the year in the user document
-    const user = await User.findById(userId);
-    if (!user) {
-      return c.json({ message: "User not found" }, 404);
-    }
+        const yearIndex = user.attendance.findIndex(
+          (a) => a.year === parseInt(year as string)
+        );
 
-    const yearIndex = user.attendance.findIndex(
-      (a) => a.year === parseInt(year as string)
-    );
+        if (yearIndex > -1) {
+          user.attendance[yearIndex].totalPercentage = attendancePercentage;
+        } else {
+          user.attendance.push({
+            year: parseInt(year as string),
+            totalPercentage: attendancePercentage,
+          });
+        }
 
-    if (yearIndex > -1) {
-      user.attendance[yearIndex].totalPercentage = attendancePercentage;
-    } else {
-      user.attendance.push({
-        year: parseInt(year as string),
-        totalPercentage: attendancePercentage,
-      });
-    }
-
-    await user.save();
-
+        await user.save();
+      }
     return c.json(
-      {
-        message: "Attendance marked successfully",
-        attendance: attendance,
-        user: user,
-      },
+      { message: "Attendance marked successfully for all users" },
       201
     );
   } catch (error) {
