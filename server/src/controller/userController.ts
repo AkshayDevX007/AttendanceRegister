@@ -46,7 +46,7 @@ user.post("/", async (c) => {
 
 // get all users
 user.get("/", async (c) => {
-  const users = await User.find();
+  const users = await User.find().sort({ createdAt: -1 });
   return c.json(users);
 });
 

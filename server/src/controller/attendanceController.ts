@@ -19,7 +19,7 @@ attendance.post("/", async (c) => {
     const currentDate = new Date();
   
     // Check if the date is a Sunday (0 = Sunday)
-    if (attendanceDate.getDay() != 0) {
+    if (attendanceDate.getDay() !== 0) {
       return c.json({ message: "Attendance can only be marked on Sundays" }, 400);
     }
   
