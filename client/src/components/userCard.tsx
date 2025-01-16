@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { User } from "../types/user";
-import { useEditUserMutation } from "../actions/user/userEditMutation";
 import useDeleteUserMutation from "../actions/user/deleteUser";
+import { useEditUserMutation } from "../actions/user/userEditMutation";
+import { User } from "../types/user";
 
 const UserCard = ({ user }: { user: User }) => {
   const [showEdit, setShowEdit] = useState(false);
@@ -66,7 +66,7 @@ const UserCard = ({ user }: { user: User }) => {
   };
 
   return (
-    <div className="card w-96 bg-base-100 shadow-xl">
+    <div className="card w-96 bg-base-100 shadow-xl self-start">
       <div className="card-body">
         <h2 className="card-title">{user?.name || "jeffin"}</h2>
         <p>Email: {user?.email || ""}</p>
